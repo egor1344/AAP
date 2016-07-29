@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Apartment
 
-# Register your models here.
+class ApartmentAdmin(admin.ModelAdmin):
+    list_display = ('title', 'price', 'city')
+
+admin.site.register(Apartment, ApartmentAdmin)
