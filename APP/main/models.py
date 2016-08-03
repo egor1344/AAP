@@ -10,6 +10,6 @@ class Apartment(models.Model):
     agent = models.CharField(max_length=300, blank=True)
     site = models.CharField(max_length=30)
     address = models.CharField(max_length=50)
-    floor = models.CharField(max_length=5, blank=True)
-    living_space = models.IntegerField(blank=True)
+    floor = models.CharField(max_length=7, blank=True)
+    living_space = models.FloatField(blank=True)
     rooms = models.IntegerField(blank=True)

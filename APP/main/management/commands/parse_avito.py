@@ -2,6 +2,7 @@ from lxml import html
 import json
 from datetime import date, timedelta, time, datetime
 from urllib.request import urlopen
+from urllib.error import HTTPError
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Apartment
 
@@ -22,7 +23,8 @@ class Command(BaseCommand):
         item_list = page.xpath('//*[@class="description"]')
         price_list = page.xpath(
             '//*[@class="popup-prices popup-prices__wrapper clearfix"]/@data-prices')
-        links = [l[0] for l in Apartment.objects.filter(site='Avito').values_list('link')]
+        links = [l[0] for l in Apartment.objects.filter(
+            site='Avito').values_list('link')]
         for key, item in enumerate(item_list):
             link = HOST + item.xpath(
                 '//h3[@class="title item-description-title"]/a/@href'
@@ -31,35 +33,47 @@ class Command(BaseCommand):
                 title = item.xpath(
                     '//h3[@class="title item-description-title"]/a//text()'
                 )[key]
-                address = urlopen(link)
-                address = address.read().decode('UTF-8')
-                address = html.fromstring(address)
-                address = address.xpath('//*[@itemprop="streetAddress"]//text()')
-                about = item.xpath(
-                    '//div[@class="about"]'
-                )[key]
+                rooms, living_space, floor = title.strip().split(',')
+
+                try:
+                    rooms = int(rooms[0])
+                except ValueError:
+                    rooms = 0  # Если вместо квартиры студия
+
+                try:
+                    address = urlopen(link)
+                except HTTPError:
+                    raise CommandError("Don't open url")
+                else:
+                    address = address.read().decode('UTF-8')
+                    address = html.fromstring(address)
+                    address = address.xpath(
+                        '//*[@itemprop="streetAddress"]//text()')
+
+                about = item.xpath('//div[@class="about"]')[key]
                 about = about.text
                 data = item.xpath('//div[@class="data"]')[key]
-                date_t = item.xpath('//div[@class="date c-2"]//text()')[key]
-                date_t = str(date_t).strip()
-                hour_minut = time(int(date_t[-5:-3]), int(date_t[-2:]))
-                date_t = datetime.combine(date.today(), hour_minut).isoformat()
                 price = 0  # Default value
+                price_all = 0
+                price_m2 = 0
                 if (not about.isspace()) and ((about.strip()[0]).isdigit()):
                     price = json.loads(price_list.pop(0))
-                    price = price[0]['currencies']['RUB']
-
+                    price_all = price[0]['currencies']['RUB']
+                    price_m2 = price[1]['currencies']['RUB']
+                
                 try:
                     a = Apartment.objects.create(
                         title=title.strip(),
                         link=link,
-                        price=price,
-                        date_time=date_t,
+                        price=price_all,
+                        price_m2=price_m2,
                         city=data[1].text,
                         agent=str(data[0].text).strip(),
                         site='Avito',
-                        address=address[0],)
+                        address=address[0],
+                        rooms=rooms,
+                        living_space=living_space[:-3],
+                        floor=floor[:-4],)
                     self.stdout.write(self.style.SUCCESS('Successfully'))
                 except Apartment.DoesNotExist:
                     raise CommandError("Don't create")
-
