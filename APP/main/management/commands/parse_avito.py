@@ -22,7 +22,7 @@ class Command(BaseCommand):
         item_list = page.xpath('//*[@class="description"]')
         price_list = page.xpath(
             '//*[@class="popup-prices popup-prices__wrapper clearfix"]/@data-prices')
-        links = [l[0] for l in Apartment.objects.values_list('link')]
+        links = [l[0] for l in Apartment.objects.filter(site='Avito').values_list('link')]
         for key, item in enumerate(item_list):
             link = HOST + item.xpath(
                 '//h3[@class="title item-description-title"]/a/@href'
