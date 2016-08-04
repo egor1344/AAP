@@ -1,6 +1,5 @@
 from lxml import html
 import json
-from datetime import date, timedelta, time, datetime
 from urllib.request import urlopen
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Apartment
@@ -28,24 +27,41 @@ class Command(BaseCommand):
             link = HOST + item.xpath(
                 '//a[@itemprop="sameAs"]/@href'
             )[key]
-
             if link not in links:
                 title = item.xpath('//a[@itemprop="sameAs"]/@title')[key]
-                self.stdout.write(self.style.SUCCESS(title))
+                agent = ''
+                try:
+                    rooms = int(title[0])
+                except ValueError:
+                    rooms = 0
+                    agent = title.split(',')
+                    agent = agent[-1].strip()
+                # self.stdout.write(self.style.SUCCESS(title))
                 address = item.xpath('//*[@itemprop="address"]//text()')[key]
+                city = address.split(',')[-2].strip()
+                # self.stdout.write(self.style.SUCCESS(city))
+                # self.stdout.write(self.style.SUCCESS(address))
                 price = item.xpath('//*[@itemprop="price"]//text()')[key]
-                self.stdout.write(self.style.SUCCESS(price))
-                datetime
-        #         try:
-        #             a = Apartment.objects.create(
-        #                 title=title.strip(),
-        #                 link=link,
-        #                 price=price,
-        #                 date_time=date_t,
-        #                 city=data[1].text,
-        #                 agent=str(data[0].text).strip(),
-        #                 site='Avito',
-        #                 address=address[0],)
-        #             self.stdout.write(self.style.SUCCESS('Successfully'))
-        #         except Apartment.DoesNotExist:
-        #             raise CommandError("Don't create")
+                price = price[:-5].replace('\xa0','')
+                try:
+                    price = int(price)
+                except ValueError:
+                    price = 0
+                # self.stdout.write(self.style.SUCCESS(price))
+                # self.stdout.write(self.style.SUCCESS('----'*3))
+
+                try:
+                    a = Apartment.objects.create(
+                            title=title.strip(),
+                            link=link,
+                            price=price,
+                            price_m2=0,
+                            city=city,
+                            agent=agent,
+                            site='Domofond',
+                            address=address,
+                            living_space=0,
+                            rooms=rooms,)
+                    self.stdout.write(self.style.SUCCESS('Successfully'))
+                except Apartment.DoesNotExist:
+                    raise CommandError("Don't create")

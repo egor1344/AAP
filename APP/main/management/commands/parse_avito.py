@@ -1,6 +1,5 @@
 from lxml import html
 import json
-from datetime import date, timedelta, time, datetime
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from django.core.management.base import BaseCommand, CommandError
