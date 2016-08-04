@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 try:
                     address = urlopen(link)
                 except HTTPError:
-                    raise CommandError("Don't open url")
+                    print("Address don't open = ", address)
                 else:
                     address = address.read().decode('UTF-8')
                     address = html.fromstring(address)
@@ -75,4 +75,4 @@ class Command(BaseCommand):
                         floor=floor[:-4],)
                     self.stdout.write(self.style.SUCCESS('Successfully'))
                 except Apartment.DoesNotExist:
-                    raise CommandError("Don't create")
+                    print('Apartmen dont create ', title)

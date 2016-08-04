@@ -64,4 +64,4 @@ class Command(BaseCommand):
                             rooms=rooms,)
                     self.stdout.write(self.style.SUCCESS('Successfully'))
                 except Apartment.DoesNotExist:
-                    raise CommandError("Don't create")
+                    print('Apartmen dont create ', title)
