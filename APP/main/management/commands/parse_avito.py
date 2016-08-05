@@ -1,7 +1,7 @@
 from lxml import html
 import json
 from urllib.request import urlopen
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Apartment
 
@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
                 try:
                     address = urlopen(link)
-                except HTTPError:
+                except HTTPError, URLError:
                     print("Address don't open = ", address)
                 else:
                     address = address.read().decode('UTF-8')
