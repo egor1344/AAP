@@ -41,8 +41,10 @@ class Command(BaseCommand):
 
                 try:
                     address = urlopen(link)
-                except HTTPError, URLError:
+                except URLError:
                     print("Address don't open = ", address)
+                except HTTPError:
+                    print("Address don't open = ", address)                    
                 else:
                     address = address.read().decode('UTF-8')
                     address = html.fromstring(address)
