@@ -50,6 +50,10 @@ class Command(BaseCommand):
                     address = html.fromstring(address)
                     address = address.xpath(
                         '//*[@itemprop="streetAddress"]//text()')
+                try:
+                    address = address[0]
+                except IndexError:
+                    address = ''
 
                 about = item.xpath('//div[@class="about"]')[key]
                 about = about.text
