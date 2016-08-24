@@ -45,7 +45,8 @@ class Command(BaseCommand):
                     living_space = 0
                 else:
                     if living_space.find('м²') != -1:
-                        living_space = living_space[:-2]
+                        living_space = living_space[:-2].replace(',', '.')
+                        living_space = float(living_space)
                     else:
                         living_space = 0
                         floor = living_space 
