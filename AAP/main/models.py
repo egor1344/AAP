@@ -5,7 +5,7 @@ class Apartment(models.Model):
     link = models.URLField(max_length=300, db_index=True)
     price = models.IntegerField(blank=True)
     price_m2 = models.IntegerField(blank=True)
-    date_time = models.DateField(auto_now_add=True)
+    date_time = models.DateTimeField(auto_now_add=True)
     city = models.CharField(max_length=50)
     agent = models.CharField(max_length=300, blank=True)
     site = models.CharField(max_length=30)
