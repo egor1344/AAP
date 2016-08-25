@@ -3,3 +3,4 @@ settings.py
 migrations/*
 static/*
 *.pyc
+debug.log

@@ -1,5 +1,6 @@
 from lxml import html
 import json
+import logging
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
 from django.core.management.base import BaseCommand, CommandError
@@ -8,6 +9,7 @@ from main.models import Apartment
 URL = 'https://www.avito.ru/bashkortostan/kvartiry/prodam'
 HOST = 'https://www.avito.ru'
 
+logger = logging.getLogger('parse_avito')
 
 class Command(BaseCommand):
     help = 'Parse apartments Avito'
@@ -16,6 +18,7 @@ class Command(BaseCommand):
         parser.add_argument('pages', default=1, type=int)
 
     def handle(self, *args, **options):
+        add_apartments = 0
         r = urlopen(URL)
         ht = r.read().decode('UTF-8')
         page = html.fromstring(ht)
@@ -79,6 +82,8 @@ class Command(BaseCommand):
                         rooms=rooms,
                         living_space=living_space[:-3],
                         floor=floor[:-4],)
-                    self.stdout.write(self.style.SUCCESS('Successfully'))
+                    add_apartments = add_apartments +1
                 except Apartment.DoesNotExist:
                     print('Apartmen dont create ', title)
+        logger.info('Added apartments from site Avito %s', add_apartments)
+
