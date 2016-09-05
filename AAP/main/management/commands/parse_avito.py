@@ -36,6 +36,9 @@ class Command(BaseCommand):
                     '//h3[@class="title item-description-title"]/a//text()'
                 )[key]
                 rooms, living_space, floor = title.strip().split(',')
+                living_space = living_space[:-3]
+                living_space = living_space.strip()
+                living_space = float(living_space)
 
                 try:
                     rooms = int(rooms[0])
@@ -51,37 +54,41 @@ class Command(BaseCommand):
                 else:
                     address = address.read().decode('UTF-8')
                     address = html.fromstring(address)
+                    price = 0
+                    price = address.xpath('//span[@itemprop="price"]//text()')
+                    price = price[0]
+                    price = price.strip()
+                    price = price[:-5].replace(' ','')
                     address = address.xpath(
                         '//*[@itemprop="streetAddress"]//text()')
                 try:
                     address = address[0]
                 except IndexError:
                     address = ''
-
+                price_m2 = 0
+                try:
+                    price = int(price)
+                except ValueError:
+                    price = 0
+                else:
+                    price_m2 = int(price) / living_space
                 about = item.xpath('//div[@class="about"]')[key]
                 about = about.text
                 data = item.xpath('//div[@class="data"]')[key]
-                price = 0  # Default value
-                price_all = 0
-                price_m2 = 0
-                if (not about.isspace()) and ((about.strip()[0]).isdigit()):
-                    price = json.loads(price_list.pop(0))
-                    price_all = price[0]['currencies']['RUB']
-                    price_m2 = price[1]['currencies']['RUB']
-                
                 try:
                     a = Apartment.objects.create(
                         title=title.strip(),
                         link=link,
-                        price=price_all,
+                        price=price,
                         price_m2=price_m2,
                         city=data[1].text,
                         agent=str(data[0].text).strip(),
                         site='Avito',
                         address=address[0],
                         rooms=rooms,
-                        living_space=living_space[:-3],
-                        floor=floor[:-4],)
+                        living_space=living_space,
+                        floor=floor.strip()[:-4],
+                        )
                     add_apartments = add_apartments +1
                 except Apartment.DoesNotExist:
                     print('Apartmen dont create ', title)
