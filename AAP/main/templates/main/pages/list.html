@@ -1,0 +1,14 @@
+{% extends "main/base.html"%}
+{% load static %}
+
+{% block title %}
+  Apartments list
+{% endblock %}
+
+{% block content %}
+  <div class="apartment">
+    {% for apartment in apartments %}
+      <p>{{ apartment.title }}</p>
+    {% endfor %}
+  </div>
+{% endblock %}
