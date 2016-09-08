@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
-from . import views
-
+from .views import ApartmetnsListView
+ 
 urlpatterns = [
-    url(r'^$', views.apartment_list, name='apartment_list'),
+    url(r'^$', ApartmetnsListView.as_view(), name='apartment_list'),
 ]
