@@ -56,11 +56,15 @@ class Command(BaseCommand):
                     address = html.fromstring(address)
                     price = 0
                     price = address.xpath('//span[@itemprop="price"]//text()')
-                    price = price[0]
-                    price = price.strip()
-                    price = price[:-5].replace(' ','')
-                    address = address.xpath(
-                        '//*[@itemprop="streetAddress"]//text()')
+                    try:
+                        price = price[0]
+                    except IndexError:
+                        price = 0
+                    else:                    
+                        price = price.strip()
+                        price = price[:-5].replace(' ','')
+                        address = address.xpath(
+                            '//*[@itemprop="streetAddress"]//text()')
                 try:
                     address = address[0]
                 except IndexError:
