@@ -88,7 +88,7 @@ class Command(BaseCommand):
                         city=data[1].text,
                         agent=str(data[0].text).strip(),
                         site='Avito',
-                        address=address[0],
+                        address=address,
                         rooms=rooms,
                         living_space=living_space,
                         floor=floor.strip()[:-4],

@@ -14,7 +14,7 @@ class ApartmentsViewSet(viewsets.ModelViewSet):
 
 
 def apartment_list(request):
-    apartments = Apartment.objects.all()
+    apartments = Apartment.objects.all().order_by('-date_time')
 
     paginator = Paginator(apartments, 30)
 
@@ -28,3 +28,8 @@ def apartment_list(request):
     return render(request,
                   'main/pages/list.html',
                   {'apartments': apartments})
+
+def landing(request):
+    return render(request,
+                'main/pages/landing.html',
+)
