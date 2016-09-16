@@ -11,13 +11,32 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <link href="{% static "css/base.css" %}" rel="stylesheet">
-    {% block css %}
-    {% endblock %}
+    {% block head %}
+    {% endblock head%}
   </head>
   <body>
+  {% block script %}
+  
+  {% endblock script%}
+    <nav class="navbar navbar-dark navbar-fixed-top bg-inverse">
+      <button type="button" class="navbar-toggler hidden-sm-up" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'main:landing' %}">Анализ цен</a>
+      <div id="navbar">
+        <nav class="nav navbar-nav pull-xs-left">
+          <a class="nav-item nav-link" href="{% url 'main:landing' %}">Главная</a>
+        </nav>
+      </div>
+    </nav>
+
+
     <div class="content">
       {% block content %}
-      {% endblock %}
+      {% endblock content%}
     </div>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->

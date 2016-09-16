@@ -1,0 +1,53 @@
+{% extends "main/pages/list.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  Описание квартиры
+{% endblock title%}
+
+{% block head %}
+{{ block.super }}
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+{% endblock head %}
+
+{% block script %}
+<script>
+  
+ymaps.ready(init());
+
+
+function init(){   
+    return function(){ 
+    var myGeocoder = ymaps.geocode("{{ apartment.city }}"+" "+"{{ apartment.address }}");
+        myGeocoder.then(
+            function (res) {
+              var City = res.geoObjects.get(0);
+              var myMap = new ymaps.Map("map", {
+              center: City.geometry.getCoordinates(),
+              zoom:15 });
+
+              myMap.geoObjects.add(res.geoObjects);
+            },
+            function (err) {
+                console.log("Error");
+            }
+        );
+};
+}
+</script>
+{% endblock script %}
+
+{% block data %}
+    <h2>{{ apartment.title }}<small class="text-muted"> Добавлено: {{ apartment.date_time }}</small></h2>
+    <a href="{{ apartment.link }}">На {{ apartment.site }}</a>
+    <h4>Цена: {{ apartment.price|intcomma }}₽. <small class="text-muted">За м<sup>2</sup> {{ apartment.price_m2|intcomma }}₽.</small></h4>
+    <p>Адрес : {{ apartment.city }} {{ apartment.address }}</p>
+    <h4>Информацио о квартире</h4>
+    <p>
+      Этаж: {{ apartment.floor}}.<br>
+      Площадь : {{ apartment.living_space }}м<sup>2</sup>.<br>
+      Количество комнат : {{ apartment.rooms }}.<br>
+    </p>
+    <div id="map" style="width: 600px; height: 400px"></div>
+{% endblock data %}

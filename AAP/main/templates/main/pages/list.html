@@ -2,44 +2,33 @@
 {% load static %}
 
 {% block title %}
-  Apartments list
-{% endblock %}
+  Список квартир
+{% endblock title %}
 
-{% block css %}
+{% block head %}
  <link href="{% static "css/list.css" %}" rel="stylesheet">
-{% endblock %}
+{% endblock head %}
 
 {% block content %}
-    <nav class="navbar navbar-dark navbar-fixed-top bg-inverse">
-      <button type="button" class="navbar-toggler hidden-sm-up" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Анализ цен</a>
-      <div id="navbar">
-        <nav class="nav navbar-nav pull-xs-left">
-          <a class="nav-item nav-link" href="#">Главная</a>
-        </nav>
-      </div>
-    </nav>
 
     <div class="container-fluid">
+    
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Список квартир<span class="sr-only">(current)</span></a></li>
+            <li><a href="{% url 'main:apartment_list' %}">Список квартир<span class="sr-only">(current)</span></a></li>
             <li><a href="#">Отчеты</a></li>
             <li><a href="#">Анализ цен</a></li>
             <li><a href="#">Экспорт данных</a></li>
           </ul>
         </div>
+
         <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
+        {% block data %}
           <h2>Список квартир</h2>
           <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
+            <table class="table table-condensed table-striped">
+              <thead class="thead-inverse">
                 <tr>
                   <th>№</th>
                   <th>Название</th>
@@ -51,7 +40,7 @@
               <tbody>
               {% for apartment in apartments %}
                 <tr>
-                  <td>{{ apartment.id }}</td>
+                  <td><a href="{% url 'main:apartmetn_detail' apartment.id %}">{{ apartment.id }}</p></td>
                   <td>{{ apartment.title }}</td>
                   <td>{{ apartment.price }}</td>
                   <td>{{ apartment.date_time }}</td>
@@ -62,26 +51,25 @@
             </table>
           </div>
 
-  <div class="pagination">
-    <span class="step-links">
-        {% if apartments.has_previous %}
-            <a href="?page={{ apartments.previous_page_number }}">Туды</a>
-        {% endif %}
+          <div class="pagination">
+            <span class="step-links">
+                {% if apartments.has_previous %}
+                    <a href="?page={{ apartments.previous_page_number }}">Туды</a>
+                {% endif %}
 
-        <span class="current">
-            Страница {{ apartments.number }} из 
-            {{ apartments.paginator.num_pages }}
-        </span>
+                <span class="current">
+                    Страница {{ apartments.number }} из 
+                    {{ apartments.paginator.num_pages }}
+                </span>
 
-        {% if apartments.has_next %}
-            <a href="?page={{ apartments.next_page_number }}">Сюды</a>
-        {% endif %}
-    </span>
-  </div>
+                {% if apartments.has_next %}
+                    <a href="?page={{ apartments.next_page_number }}">Сюды</a>
+                {% endif %}
+            </span>
+          </div>
           
         </div>
       </div>
+      {% endblock data%}
     </div>
-
-
-{% endblock %}
+{% endblock content%}
