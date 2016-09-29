@@ -1,6 +1,7 @@
 from lxml import html
 import logging
 from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Apartment
 
@@ -17,17 +18,26 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         add_apartments = 0
-        r = urlopen(URL)
+        self.stdout.write(self.style.SUCCESS('Test'))
+        try:
+            r = urlopen(URL)
+        except URLError:
+            self.stdout.write(self.style.SUCCESS('UrlError'))
+        except HTTPError:
+            self.stdout.write(self.style.SUCCESS('HttpError'))
         ht = r.read().decode('UTF-8')
         page = html.fromstring(ht)
-        item_list = page.xpath('//*[@class="df_listingTileExpanded"]')
+        item_list = page.xpath('//*[@id="listingResults"]/*')
+        self.stdout.write(self.style.SUCCESS(item_list))
         price_list = page.xpath('//*[@itemprop="price"]//text()')
+        self.stdout.write(self.style.SUCCESS(price_list))
         links = [l[0] for l in Apartment.objects.filter(
             site='Domofond').values_list('link')]
         for key, item in enumerate(item_list):
             link = HOST + item.xpath('//a[@itemprop="sameAs"]/@href')[key]
             if link not in links:
                 title = item.xpath('//a[@itemprop="sameAs"]/@title')[key]
+                self.stdout.write(self.style.SUCCESS('Title  = "%s"' % title))
                 price_m2 = item.xpath('a/div[1]/div[1]/span//text()')
                 try:
                     price_m2 = price_m2.pop(0)
@@ -62,7 +72,10 @@ class Command(BaseCommand):
                     agent = title.split(',')
                     agent = agent[-1].strip()
                 address = item.xpath('//*[@itemprop="address"]//text()')[key]
-                city = address.split(',')[-2].strip()
+                try:
+                    city = address.split(',')[-2].strip()
+                except IndexError:
+                    city = ' '
                 price = item.xpath('//*[@itemprop="price"]//text()')[key]
                 price = price[:-5].replace('\xa0','')
                 try:
