@@ -48,9 +48,9 @@ class Command(BaseCommand):
                 try:
                     page_in = urlopen(link)
                 except URLError:
-                    print("Address don't open = ", page_in)
+                    print("Address don't open = ", link)
                 except HTTPError:
-                    print("Address don't open = ", page_in)                    
+                    print("Address don't open = ", link)                    
                 else:
                     page_in = page_in.read().decode('UTF-8')
                     page_in = html.fromstring(page_in)
@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 type_house = page_in.xpath('//div[@class="item-params c-1"][2]/a[2]/@title')
                 type_house = type_house[0].split('—')
                 type_house  = type_house[1]
-                self.stdout.write(self.style.SUCCESS('Type house = {}'.format(type_house)))
+                # self.stdout.write(self.style.SUCCESS('Type house = {}'.format(type_house)))
                 price_m2 = 0
                 try:
                     price = int(price)
