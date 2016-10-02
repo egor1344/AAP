@@ -13,3 +13,6 @@ class Apartment(models.Model):
     floor = models.CharField(max_length=7, blank=True)
     living_space = models.FloatField(blank=True)
     rooms = models.IntegerField(blank=True)
+    district = models.CharField(max_length=50, blank=True, null=True)
+    type_house = models.CharField(max_length=20, blank=True, null=True)
+    

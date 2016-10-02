@@ -46,16 +46,16 @@ class Command(BaseCommand):
                     rooms = 0  # Если вместо квартиры студия
 
                 try:
-                    address = urlopen(link)
+                    page_in = urlopen(link)
                 except URLError:
-                    print("Address don't open = ", address)
+                    print("Address don't open = ", page_in)
                 except HTTPError:
-                    print("Address don't open = ", address)                    
+                    print("Address don't open = ", page_in)                    
                 else:
-                    address = address.read().decode('UTF-8')
-                    address = html.fromstring(address)
+                    page_in = page_in.read().decode('UTF-8')
+                    page_in = html.fromstring(page_in)
                     price = 0
-                    price = address.xpath('//span[@itemprop="price"]//text()')
+                    price = page_in.xpath('//span[@itemprop="price"]//text()')
                     try:
                         price = price[0]
                     except IndexError:
@@ -63,12 +63,20 @@ class Command(BaseCommand):
                     else:                    
                         price = price.strip()
                         price = price[:-5].replace(' ','')
-                        address = address.xpath(
-                            '//*[@itemprop="streetAddress"]//text()')
-                try:
+                        address = page_in.xpath(
+                            '//span[@id="toggle_map"]//text()')
+                district = ' '
+                if (len(address) == 2):
+                    district = address[0]
+                    district = district.split(' ')
+                    district = district[1][:-1]
+                    address = address[1]
+                else:
                     address = address[0]
-                except IndexError:
-                    address = ''
+                type_house = page_in.xpath('//div[@class="item-params c-1"][2]/a[2]/@title')
+                type_house = type_house[0].split('—')
+                type_house  = type_house[1]
+                self.stdout.write(self.style.SUCCESS('Type house = {}'.format(type_house)))
                 price_m2 = 0
                 try:
                     price = int(price)
@@ -79,22 +87,23 @@ class Command(BaseCommand):
                 about = item.xpath('//div[@class="about"]')[key]
                 about = about.text
                 data = item.xpath('//div[@class="data"]')[key]
-                try:
-                    a = Apartment.objects.create(
-                        title=title.strip(),
-                        link=link,
-                        price=price,
-                        price_m2=price_m2,
-                        city=data[1].text,
-                        agent=str(data[0].text).strip(),
-                        site='Avito',
-                        address=address,
-                        rooms=rooms,
-                        living_space=living_space,
-                        floor=floor.strip()[:-4],
-                        )
-                    add_apartments = add_apartments +1
-                except Apartment.DoesNotExist:
-                    print('Apartmen dont create ', title)
-        logger.info('Added apartments from site Avito %s', add_apartments)
+                
+        #         try:
+        #             a = Apartment.objects.create(
+        #                 title=title.strip(),
+        #                 link=link,
+        #                 price=price,
+        #                 price_m2=price_m2,
+        #                 city=data[1].text,
+        #                 agent=str(data[0].text).strip(),
+        #                 site='Avito',
+        #                 address=address,
+        #                 rooms=rooms,
+        #                 living_space=living_space,
+        #                 floor=floor.strip()[:-4],
+        #                 )
+        #             add_apartments = add_apartments +1
+        #         except Apartment.DoesNotExist:
+        #             print('Apartmen dont create ', title)
+        # logger.info('Added apartments from site Avito %s', add_apartments)
 
