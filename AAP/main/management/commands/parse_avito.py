@@ -88,22 +88,25 @@ class Command(BaseCommand):
                 about = about.text
                 data = item.xpath('//div[@class="data"]')[key]
                 
-        #         try:
-        #             a = Apartment.objects.create(
-        #                 title=title.strip(),
-        #                 link=link,
-        #                 price=price,
-        #                 price_m2=price_m2,
-        #                 city=data[1].text,
-        #                 agent=str(data[0].text).strip(),
-        #                 site='Avito',
-        #                 address=address,
-        #                 rooms=rooms,
-        #                 living_space=living_space,
-        #                 floor=floor.strip()[:-4],
-        #                 )
-        #             add_apartments = add_apartments +1
-        #         except Apartment.DoesNotExist:
-        #             print('Apartmen dont create ', title)
-        # logger.info('Added apartments from site Avito %s', add_apartments)
+                try:
+                    a = Apartment.objects.create(
+                        title=title.strip(),
+                        link=link,
+                        price=price,
+                        price_m2=price_m2,
+                        city=data[1].text,
+                        agent=str(data[0].text).strip(),
+                        site='Avito',
+                        address=address,
+                        rooms=rooms,
+                        living_space=living_space,
+                        floor=floor.strip()[:-4],
+                        type_house=type_house,
+                        district=district,
+                        active=True,
+                        )
+                    add_apartments = add_apartments +1
+                except Apartment.DoesNotExist:
+                    print('Apartmen dont create ', title)
+        logger.info('Added apartments from site Avito %s', add_apartments)
 

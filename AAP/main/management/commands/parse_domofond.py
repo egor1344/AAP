@@ -82,20 +82,20 @@ class Command(BaseCommand):
                     price = int(price)
                 except ValueError:
                     price = 0
-                try:
-                    a = Apartment.objects.create(
-                            title=title.strip(),
-                            link=link,
-                            price=price,
-                            price_m2=price_m2,
-                            city=city,
-                            agent=agent,
-                            site='Domofond',
-                            address=address,
-                            living_space=living_space,
-                            rooms=rooms,
-                            floor=floor, )
-                    add_apartments = add_apartments + 1
-                except Apartment.DoesNotExist:
-                    print('Apartmen dont create ', title)
-        logger.info('Added apartments from site Domofond %s', add_apartments)
+        #         try:
+        #             a = Apartment.objects.create(
+        #                     title=title.strip(),
+        #                     link=link,
+        #                     price=price,
+        #                     price_m2=price_m2,
+        #                     city=city,
+        #                     agent=agent,
+        #                     site='Domofond',
+        #                     address=address,
+        #                     living_space=living_space,
+        #                     rooms=rooms,
+        #                     floor=floor, )
+        #             add_apartments = add_apartments + 1
+        #         except Apartment.DoesNotExist:
+        #             print('Apartmen dont create ', title)
+        # logger.info('Added apartments from site Domofond %s', add_apartments)
