@@ -162,4 +162,4 @@ class Command(BaseCommand):
                         add_apartments = add_apartments + 1
                     except Apartment.DoesNotExist:
                         print('Apartmen dont create ', title)
-            logger.info('Added apartments from site Domofond %s', add_apartments)
+        logger.info('Added apartments from site Domofond %s', add_apartments)
