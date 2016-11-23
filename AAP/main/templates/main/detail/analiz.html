@@ -1,0 +1,52 @@
+{% extends "main/pages/list.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  Анализ города Уфа
+{% endblock title%}
+
+
+{% block data %}
+  <p>
+    <h2>Анализ по районам города Уфы</h2>
+  </p>
+
+  <div class="table-responsive">
+            <table class="table table-condensed table-striped">
+              <thead class="thead-inverse">
+                <tr>
+                  <th></th>
+                  <th> </th>
+                  <th> </th>
+                  <th>По ценам квартир</th>
+                  <th> </th>
+                  <th> </th>
+                  <th>За м<sup>2</sup></th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <th>Название района</th>
+                  <th>Количество</th>
+                  <th>Стандарт. отклонение</th>
+                  <th>Дисперсия</th>
+                  <th>Сред. знач</th>
+                  <th>Стандарт. отклонение</th>
+                  <th>Дисперсия</th>
+                  <th>Сред. знач</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for key, value in dict_ufa.items %}
+              <tr>
+                <th>{{key}}</th>
+                {% for v in value %}
+                <th>{{ v|floatformat }}</th>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+{% endblock data %}
