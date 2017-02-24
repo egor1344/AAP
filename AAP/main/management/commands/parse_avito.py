@@ -74,9 +74,12 @@ class Command(BaseCommand):
                         price = price.strip()
                 
                 if( price != 0):
-                    # print('Price = ',price)
+                    print('Price = ',price)
                     price = price.replace('\u2009','')
-                    # print('Price = ',price)
+                    print('Price = ',price)
+                    price = price.replace(' ','')
+                    price = price.strip()
+                    print('Price = ',price)
                 address = address.strip()
                 # print(address)
                 city = address.split(',')[1]
@@ -100,19 +103,19 @@ class Command(BaseCommand):
                     price = 0
                 else:
                     price_m2 = int(price) / living_space
-                # print(  '\ntitle=',title.strip(),
-                #         '\nlink=',link,
-                #         '\nprice=',price,
-                #         '\nprice_m2=',price_m2,
-                #         '\ncity=',city,
-                #         '\nagent=','str(data[0].text).strip()',
-                #         '\naddress=',address,
-                #         '\nrooms=',rooms,
-                #         '\nliving_space=',living_space,
-                #         '\nfloor=',floor.strip()[:-4],
-                #         '\ntype_house=',type_house,
-                #         '\ndistrict=',district
-                #       )
+                print(  '\ntitle=',title.strip(),
+                        '\nlink=',link,
+                        '\nprice=',price,
+                        '\nprice_m2=',price_m2,
+                        '\ncity=',city,
+                        '\nagent=','str(data[0].text).strip()',
+                        '\naddress=',address,
+                        '\nrooms=',rooms,
+                        '\nliving_space=',living_space,
+                        '\nfloor=',floor.strip()[:-4],
+                        '\ntype_house=',type_house,
+                        '\ndistrict=',district
+                      )
                 
                 try:
                     a = Apartment.objects.create(
