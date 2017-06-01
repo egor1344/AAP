@@ -80,11 +80,18 @@ class Command(BaseCommand):
 
                     # Парсинг адреса, района и города
                     address = page_in.xpath('//div[h5="Расположение "]/p//text()')
+                    print(address)
                     if (len(address) == 2):
                         district = address[1]
                         address = address[0]
                         city = address.split(',')
-                        city = city[-2]
+                        print(city)
+                        try:
+                            city = city[-2]
+                        except IndexError:
+                            city = district.split(',')
+                            city = city[-2]
+
                     elif(len(address) == 1):
                         address = address[0]
                         city = address.split(',')
