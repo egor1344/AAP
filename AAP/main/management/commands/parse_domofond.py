@@ -3,6 +3,8 @@ import logging
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
 from django.core.management.base import BaseCommand, CommandError
+import configparser
+
 from main.models import Apartment
 
 URL = 'http://www.domofond.ru/prodazha-kvartiry-bashkortostan-r41?SortOrder=Newest'
@@ -16,10 +18,17 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('pages', default=1, type=int)
 
+    def _confing(self):
+        confing = configparser.ConfigParser()
+        confing.read('parser.ini')
+        avito = confing['Domofond']
+        return avito['Url'], avito['Host']
+
     def handle(self, *args, **options):
         add_apartments = 0
+        url, host = self._confing()
         try:
-            r = urlopen(URL)
+            r = urlopen(url)
         except URLError:
             self.stdout.write(self.style.SUCCESS('UrlError'))
         except HTTPError:
@@ -32,17 +41,18 @@ class Command(BaseCommand):
         links = [l[0] for l in Apartment.objects.filter(
             site='Domofond').values_list('link')]
         for key, item in enumerate(item_list):
-            link = HOST + item.xpath('//a[@itemprop="sameAs"]/@href')[key]
+            link = host + item.xpath('//a[@itemprop="sameAs"]/@href')[key]
             if (link not in links):
                 try:
                     page_in = urlopen(link)
                 except URLError:
-                    print("Address don't open = ", link)
+                    ("Address don't open = ", link)
                 except HTTPError:
-                    print("Address don't open = ", link)
+                    ("Address don't open = ", link)
                 else:
                     page_in = page_in.read().decode('UTF-8')
                     page_in = html.fromstring(page_in)
+                    
                     # Парсинг названия обьявления
                     title = page_in.xpath('//div[@class="b-listing-details"]/h5[1]//text()')
                     try:
@@ -50,6 +60,7 @@ class Command(BaseCommand):
                     except IndexError:
                         title = ''
                     self.stdout.write(self.style.SUCCESS('Title = {}'.format(title)))
+
                     # Парсинг цены
                     price = page_in.xpath('//li[strong="Цена:"]//text()')
                     try:
@@ -80,12 +91,10 @@ class Command(BaseCommand):
 
                     # Парсинг адреса, района и города
                     address = page_in.xpath('//div[h5="Расположение "]/p//text()')
-                    print(address)
                     if (len(address) == 2):
                         district = address[1]
                         address = address[0]
                         city = address.split(',')
-                        print(city)
                         try:
                             city = city[-2]
                         except IndexError:
@@ -97,9 +106,6 @@ class Command(BaseCommand):
                         city = address.split(',')
                         city = city[-2]
                         district = ''                    
-                    # self.stdout.write(self.style.SUCCESS(
-                    #     'City = {} , address = {} , district = {} '.
-                    #     format(city,address,district)))
 
                     # Парсер типов домов
                     type_house = page_in.xpath('//li[strong="Материал здания:"]//text()')
@@ -120,7 +126,6 @@ class Command(BaseCommand):
                     else:
                         floor = floor.strip()
                         floor = floor.replace('\xa0', '')
-                    # self.stdout.write(self.style.SUCCESS('Floor = {}'.format(floor)))
                     
                     # Парсер площади квартиры
                     living_space = page_in.xpath('//li[strong="Площадь:"]//text()')
@@ -149,7 +154,8 @@ class Command(BaseCommand):
                             rooms = int(rooms)
                         except ValueError:
                             rooms = 0
-                    self.stdout.write(self.style.SUCCESS('Rooms = {}'.format(rooms)))
+
+                    # Заносим в базу
                     try:
                         a = Apartment.objects.create(
                                 title=title,
