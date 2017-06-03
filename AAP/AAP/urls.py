@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include('account.urls', namespace='account')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # url(r'^.*', TemplateView.as_view(template_name='ang_home.html'), name='home'),
+    url(r'^.*', TemplateView.as_view(template_name='ang_home.html'), name='home'),
     url(r'^', include('main.urls', namespace='main')),
 ]
 
