@@ -6,7 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { Apartment } from '../apartment';
+import { Apartment, ApartmentFull } from '../apartment';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class ApartmentService {
@@ -15,13 +16,17 @@ export class ApartmentService {
   private authUrl = 'api-auth/';
   private url = 'http://localhost:8000/api/v1/apartments/'
 
-  constructor(private http: Http) { }
+  constructor(
+    private http: Http,
+    private authService: AuthService
+  ) { }
 
-  getApartments(token): Observable<Apartment[]> {
-    let token_string = 'Token 	' + token;
+  getApartments(): Observable<Apartment[]> {
+    let token = this.authService.getToken()
+    token = 'Token 	' + token;
     let headers = new Headers({
       'Content-Type': 'application/json',
-      'Authorization': token_string
+      'Authorization': token
                              });
     let options = new RequestOptions({headers: headers})
     return this.http.get(this.url, options)
@@ -29,12 +34,28 @@ export class ApartmentService {
                .catch(this.handleError);
   }
 
-  
+  getApartmentDetail(id): Observable<ApartmentFull>{
+    // console.log('id = ' + id);
+    let token = this.authService.getToken()
+    token = 'Token 	' + token;
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': token
+                             });
+    let url = this.url + id + '/';
+    console.log(typeof(id));
+    console.log('url = ', url);
+    let options = new RequestOptions({headers: headers})
+    return this.http.get(url, options)
+                .map(this.extractApartment)
+                .catch(this.handleError);
+  }
 
   private extractApartment(res: Response) {
     let body = res.json();
-    console.log(body.results);
-    return body.results || {};
+    // console.log(body.results);
+    // console.log(body);
+    return body.results || body;
   }
 
   private handleError(error: any): Promise<any>{

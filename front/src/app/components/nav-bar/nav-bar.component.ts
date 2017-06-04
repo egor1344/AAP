@@ -24,7 +24,7 @@ export class NavBarComponent implements OnInit, DoCheck {
     } else {
       this.login = false;
     }
-    console.log(this.login);
+    // console.log(this.login);
   }
 
   ngOnInit() {
@@ -34,7 +34,7 @@ export class NavBarComponent implements OnInit, DoCheck {
     } else {
       this.login = false;
     }
-    console.log(this.login);
+    // console.log(this.login);
   }
 
   onLogoutClick(){

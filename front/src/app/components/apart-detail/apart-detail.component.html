@@ -1,7 +1,7 @@
 <div class="conteiner">
   <h2>{{ apartment.title }}<small class="text-muted"> Добавлено: {{ apartment.date_time }}</small></h2>
   <a href="{{ apartment.link }}">На {{ apartment.site }}</a>
-  <h4>Цена: {{ apartment.price|intcomma }}₽. <small class="text-muted">За м<sup>2</sup> {{ apartment.price_m2 }}₽.</small></h4>
+  <h4>Цена: {{ apartment.price }}₽. <small class="text-muted">За м<sup>2</sup> {{ apartment.price_m2 }}₽.</small></h4>
   <p>Адрес : {{ apartment.city }} {{ apartment.address }}</p>
   <h4>Информацио о квартире</h4>
   <p>

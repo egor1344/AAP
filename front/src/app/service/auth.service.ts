@@ -23,7 +23,7 @@ export class AuthService {
   authenticateUser(user) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    console.log(user);
+    // console.log(user);
     return this.http.post('http://localhost:8000/account/get_auth_token/', user, {headers: headers})
     .map(res => res.json());
   }
@@ -60,12 +60,12 @@ export class AuthService {
   }
 
   logout() {
-    console.log('Logout = ' + this.authToken + ' ' + this.user);
-    console.log(localStorage);
+    // console.log('Logout = ' + this.authToken + ' ' + this.user);
+    // console.log(localStorage);
     this.authToken = null;
     this.user = null;
     localStorage.clear()
-    console.log(localStorage);
+    // console.log(localStorage);
   }
 
   isLogin(){

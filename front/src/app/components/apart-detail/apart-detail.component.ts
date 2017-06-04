@@ -1,4 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/map';
+
+import { Observable } from 'rxjs/Observable';
+import { Component, OnInit }      from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Location }               from '@angular/common';
+
+import { ApartmentService } from '../../service/apartment.service';
+import { ApartmentFull } from "../../apartment";
+
 
 @Component({
   selector: 'app-apart-detail',
@@ -7,9 +17,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ApartDetailComponent implements OnInit {
 
-  constructor() { }
+  apartment: ApartmentFull;
+  id: number;
 
-  ngOnInit() {
+  constructor(
+    private route: ActivatedRoute,
+    private location: Location,
+    private apartmentService: ApartmentService
+  ) { }
+
+  ngOnInit(): void {
+    this.route.params
+       .switchMap((params: Params) => {
+         this.id = +params['id'];
+         return this.apartmentService.getApartmentDetail(this.id);
+       }).subscribe(aparment => {this.apartment = aparment})
   }
 
 }
