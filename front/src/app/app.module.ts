@@ -18,8 +18,8 @@ import { AuthService } from './service/auth.service';
 
 const appRoutes: Routes = [
   {path:'', component:HomeComponent},
-  {path:'list', component:ApartListComponent},
-  {path:'detail/:id', component:ApartListComponent},
+  {path:'apartment', component:ApartListComponent},
+  {path:'detail/:id', component:ApartDetailComponent},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
 

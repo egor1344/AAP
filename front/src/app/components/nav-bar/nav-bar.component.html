@@ -10,16 +10,10 @@
         <a class="nav-link" [routerLink]="['/']">Главная<span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/list']">Список обьявлений</a>
+        <a class="nav-link" [routerLink]="['/apartment']">Список обьявлений</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Статистика</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Отчеты</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Отчеты</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Отчеты</a>
@@ -31,6 +25,9 @@
         </li>
         <li class="nav-item" *ngIf="!login">
           <a class="nav-link" [routerLink]="['/register']">Regitser</a>
+        </li>
+        <li class="nav-item" *ngIf="login">
+          <a class="nav-link">{{ username }}</a>
         </li>
         <li class="nav-item" *ngIf="login">
           <a class="nav-link" (click)="onLogoutClick()">Log Out</a>

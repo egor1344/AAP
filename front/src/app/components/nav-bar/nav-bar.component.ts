@@ -10,6 +10,7 @@ import { Router }            from '@angular/router';
 export class NavBarComponent implements OnInit, DoCheck {
 
   login: boolean;
+  username: string;
 
   constructor(
     private authService: AuthService,
@@ -19,19 +20,21 @@ export class NavBarComponent implements OnInit, DoCheck {
   ngDoCheck() {
     if (this.authService.isLogin()) {
         this.login = true;
+        this.username = this.authService.getUser();
     } else {
       this.login = false;
     }
-    console.log(this.login);
+    // console.log(this.login);
   }
 
   ngOnInit() {
     if (this.authService.isLogin()) {
         this.login = true;
+        this.username = this.authService.getUser();
     } else {
       this.login = false;
     }
-    console.log(this.login);
+    // console.log(this.login);
   }
 
   onLogoutClick(){

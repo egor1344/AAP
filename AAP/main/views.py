@@ -2,26 +2,10 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from .models import Apartment
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .serilializers import ApartmentSerializer
 from rest_framework import viewsets, generics
 from django.db.models import Max, Avg, Min, StdDev, Sum, Variance
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
-
-class ApartmentList(APIView):
-    def get(self, request, format=None):
-        apartments = Apartment.objects.all().order_by('-date_time')[0]
-        apart_serilize = ApartmentSerializer(apartments)
-        return Response(apart_serilize.data)
-
-class ApartmentsViewSet(viewsets.ModelViewSet):
-    """
-    API for apartment
-    """
-    queryset = Apartment.objects.all().order_by('-date_time')
-    serializer_class = ApartmentSerializer
-
 
 def apartment_list(request):
     apartments = Apartment.objects.all().order_by('-date_time')
