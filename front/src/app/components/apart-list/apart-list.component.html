@@ -1,3 +1,28 @@
-<p>
-  apart-list works!
-</p>
+<div class="conteiner">
+    <div class="row">
+        <div class="col-12 col-sm-10 offset-sm-1 col-md-10 offset-md-1">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Обьявление</th>
+                <th>Город</th>
+                <th>Сайт</th>
+                <th>Цена</th>
+                <th>Дата добаления</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let apartment of apartments">
+                <th>{{ apartment.id }}</th>
+                <th>{{ apartment.title }}</th>
+                <th>{{ apartment.city }}</th>
+                <th>{{ apartment.site }}</th>
+                <th>{{ apartment.price }}</th>
+                <th>{{ apartment.date_time }}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+</div>

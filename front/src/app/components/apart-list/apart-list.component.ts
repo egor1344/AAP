@@ -10,9 +10,10 @@ import {AuthService }       from '../../service/auth.service';
   templateUrl: './apart-list.component.html',
   styleUrls: ['./apart-list.component.css']
 })
+
 export class ApartListComponent implements OnInit {
 
-  private apartments: Apartment[];
+  apartments: Apartment[];
 
   constructor(
     private router: Router,
@@ -22,10 +23,7 @@ export class ApartListComponent implements OnInit {
 
   getApartments() {
     this.apartmentService.getApartments(this.authService.getToken())
-               .subscribe(apart => {
-                 console.log(apart);
-                 this.apartments = apart;
-               });
+               .subscribe(apart => {this.apartments = apart;});
 
   }
 

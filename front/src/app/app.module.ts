@@ -22,7 +22,6 @@ const appRoutes: Routes = [
   {path:'detail/:id', component:ApartListComponent},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
-  // {path:'logout', component:ApartListComponent},
 
 ]
 

@@ -6,4 +6,5 @@ export class Apartment {
   city: string;
   date_time: string;
   site: string;
+
 }

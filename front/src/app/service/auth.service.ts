@@ -4,8 +4,10 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService {
+
   authToken: any;
   user: any;
+  
 
   constructor(
     private http: Http
@@ -58,9 +60,17 @@ export class AuthService {
   }
 
   logout() {
+    console.log('Logout = ' + this.authToken + ' ' + this.user);
+    console.log(localStorage);
     this.authToken = null;
     this.user = null;
     localStorage.clear()
+    console.log(localStorage);
+  }
+
+  isLogin(){
+    let isLogin = !!localStorage.getItem('id_token');
+    return isLogin;
   }
 
 }
