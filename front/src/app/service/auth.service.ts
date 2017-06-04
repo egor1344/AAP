@@ -7,7 +7,7 @@ export class AuthService {
 
   authToken: any;
   user: any;
-  
+
 
   constructor(
     private http: Http
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   getUser(){
-    return this.user;
+    return localStorage.getItem('user');
   }
 
   getToken(){

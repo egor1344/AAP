@@ -29,6 +29,8 @@ export class ApartmentService {
                .catch(this.handleError);
   }
 
+  
+
   private extractApartment(res: Response) {
     let body = res.json();
     console.log(body.results);
