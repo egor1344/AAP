@@ -26,15 +26,17 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         add_apartments = 0
         url, host = self._confing()
+        print(url, host)
         r = urlopen(url)
         ht = r.read().decode('UTF-8')
         page = html.fromstring(ht)
-        item_list = page.xpath('//*[@class="description"]')
+        print(page)
+        item_list = page.xpath('//div[contains(@class, "item")]')
+        print(len(item_list))
         price_list = page.xpath(
             '//*[@class="popup-prices popup-prices__wrapper clearfix"]/@data-prices')
         links = [l[0] for l in Apartment.objects.filter(
             site='Avito').values_list('link')]
-
         for key, item in enumerate(item_list):
             link = host + item.xpath(
                 '//h3[@class="title item-description-title"]/a/@href'
@@ -45,7 +47,7 @@ class Command(BaseCommand):
                     '//h3[@class="title item-description-title"]/a//text()'
                 )[key]
 
-                # Обработка квадратуры 
+                # Обработка квадратуры
                 rooms, living_space, floor = title.strip().split(',')
                 living_space = living_space[:-3]
                 living_space = living_space.strip()
@@ -74,9 +76,9 @@ class Command(BaseCommand):
                         price = price[0]
                     except IndexError:
                         price = 0
-                    else:                    
+                    else:
                         price = price.strip()
-                
+
                 if( price != 0):
                     price = price.replace('\u2009','')
                     price = price.replace(' ','')
@@ -95,7 +97,7 @@ class Command(BaseCommand):
                 except ValueError:
                     price = 0
                 else:
-                    price_m2 = int(price) / living_space                
+                    price_m2 = int(price) / living_space
                 try:
                     a = Apartment.objects.create(
                         title=title.strip(),
@@ -115,5 +117,5 @@ class Command(BaseCommand):
                         )
                     add_apartments = add_apartments +1
                 except Apartment.DoesNotExist:
+                    pass
         logger.info('Added apartments from site Avito %s', add_apartments)
-
