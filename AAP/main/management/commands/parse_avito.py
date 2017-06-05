@@ -7,7 +7,8 @@ import configparser
 
 from django.core.management.base import BaseCommand, CommandError
 
-from main.models import Apartment
+from main.models import Apartment, HistoryApartmentPrice
+
 
 logger = logging.getLogger('parse_avito')
 
@@ -31,18 +32,21 @@ class Command(BaseCommand):
         ht = r.read().decode('UTF-8')
         page = html.fromstring(ht)
         print(page)
-        item_list = page.xpath('//div[contains(@class, "item")]')
+        item_list = page.xpath('//div[contains(@class, "js-catalog-item-enum")]')
         print(len(item_list))
         price_list = page.xpath(
             '//*[@class="popup-prices popup-prices__wrapper clearfix"]/@data-prices')
         links = [l[0] for l in Apartment.objects.filter(
             site='Avito').values_list('link')]
+        print(len(links))
         for key, item in enumerate(item_list):
             link = host + item.xpath(
                 '//h3[@class="title item-description-title"]/a/@href'
             )[key]
 
+            print(key, link)
             if link not in links:
+                print('Link done' + link)
                 title = item.xpath(
                     '//h3[@class="title item-description-title"]/a//text()'
                 )[key]
@@ -118,4 +122,45 @@ class Command(BaseCommand):
                     add_apartments = add_apartments +1
                 except Apartment.DoesNotExist:
                     pass
+            else:
+                # Если изменилась цена
+                try:
+                    page_in = urlopen(link)
+                except URLError:
+                    pass
+                except HTTPError:
+                    pass
+                else:
+                    page_in = page_in.read().decode('UTF-8')
+                    page_in = html.fromstring(page_in)
+                    price = 0
+                    price = page_in.xpath('//span[@class="price-value-string"][1]//text()')
+                    try:
+                        price = price[0]
+                    except IndexError:
+                        price = 0
+                    else:
+                        price = price.strip()
+
+                    if( price != 0):
+                        price = price.replace('\u2009','')
+                        price = price.replace(' ','')
+                        price = price.strip()
+                    try:
+                        price = int(price)
+                    except ValueError:
+                        price = 0
+
+                    apart = Apartment.objects.get(link=link)
+                    if (price != apart.price):
+                        print('Price change')
+                        apart_price_history = HistoryApartmentPrice.objects.create(apartment=apart, price=apart.price)
+                        apart.price = price
+                        apart.save()
+                    else:
+                        print('Price not change')
+
+
+
+
         logger.info('Added apartments from site Avito %s', add_apartments)

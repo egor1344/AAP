@@ -16,3 +16,8 @@ class Apartment(models.Model):
     district = models.CharField(max_length=50, blank=True, null=True)
     type_house = models.CharField(max_length=20, blank=True, null=True)
     active = models.BooleanField()
+
+class HistoryApartmentPrice(models.Model):
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
+    date_time = models.DateTimeField(auto_now_add=True)
+    price = models.IntegerField(blank=True)

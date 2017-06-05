@@ -5,7 +5,7 @@ from urllib.error import HTTPError, URLError
 from django.core.management.base import BaseCommand, CommandError
 import configparser
 
-from main.models import Apartment
+from main.models import Apartment, HistoryApartmentPrice
 
 URL = 'http://www.domofond.ru/prodazha-kvartiry-bashkortostan-r41?SortOrder=Newest'
 HOST = 'http://www.domofond.ru'
@@ -33,6 +33,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('UrlError'))
         except HTTPError:
             self.stdout.write(self.style.SUCCESS('HttpError'))
+        r = urlopen(url)
         ht = r.read().decode('UTF-8')
         page = html.fromstring(ht)
         item_list = page.xpath('//div[@id="listingResults"][1]/*')
@@ -175,4 +176,46 @@ class Command(BaseCommand):
                         add_apartments = add_apartments + 1
                     except Apartment.DoesNotExist:
                         print('Apartmen dont create ', title)
+            else:
+                # Если изменилась цена
+                try:
+                    page_in = urlopen(link)
+                except URLError:
+                    ("Address don't open = ", link)
+                except HTTPError:
+                    ("Address don't open = ", link)
+                else:
+                    page_in = page_in.read().decode('UTF-8')
+                    page_in = html.fromstring(page_in)
+                    
+                    # Парсинг названия обьявления
+                    title = page_in.xpath('//div[@class="b-listing-details"]/h5[1]//text()')
+                    try:
+                        title = title[0]
+                    except IndexError:
+                        title = ''
+                    self.stdout.write(self.style.SUCCESS('Title = {}'.format(title)))
+
+                    # Парсинг цены
+                    price = page_in.xpath('//li[strong="Цена:"]//text()')
+                    try:
+                        price = price[2]
+                    except IndexError:
+                        continue
+                    else:
+                        price = price.strip()[:-5]
+                        price = price.replace('\xa0', '')
+                        try:
+                            price = int(price)
+                        except ValueError:
+                            price = 0
+
+                    apart = Apartment.objects.get(link=link)
+                    if (price != apart.price):
+                        print('Price change')
+                        apart_price_history = HistoryApartmentPrice.objects.create(apartment=apart, price=apart.price)
+                        apart.price = price
+                        apart.save()
+                    else:
+                        print('Price not change')
         logger.info('Added apartments from site Domofond %s', add_apartments)
