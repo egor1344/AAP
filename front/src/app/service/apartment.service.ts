@@ -26,7 +26,8 @@ export class ApartmentService {
     token = 'Token 	' + token;
     let headers = new Headers({
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': token,
+      'Access-Control-Allow-Origin': '*'
                              });
     let options = new RequestOptions({headers: headers})
     return this.http.get(this.url, options)
@@ -53,8 +54,8 @@ export class ApartmentService {
 
   private extractApartment(res: Response) {
     let body = res.json();
-    // console.log(body.results);
-    // console.log(body);
+    // console.log('result ' + body.results);
+    // console.log('body ' + body);
     return body.results || body;
   }
 

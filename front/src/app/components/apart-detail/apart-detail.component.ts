@@ -26,12 +26,23 @@ export class ApartDetailComponent implements OnInit {
     private apartmentService: ApartmentService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.getApartmentDetail();
+  }
+
+  getApartmentDetail(){
     this.route.params
        .switchMap((params: Params) => {
          this.id = +params['id'];
          return this.apartmentService.getApartmentDetail(this.id);
-       }).subscribe(aparment => {this.apartment = aparment})
+       }).subscribe(take_apartment => {
+         this.apartment = take_apartment;
+         this.readProp(this.apartment);
+       });
+  }
+
+  readProp(aparment){
+    console.log(aparment.title);
   }
 
 }

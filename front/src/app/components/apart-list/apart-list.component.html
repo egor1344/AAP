@@ -14,7 +14,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let apartment of apartments">
-                <th><a (click)="onClick(apartment.id)">{{ apartment.id }}</a></th>
+                <th><a routerLink='/apartment/{{ apartment.id }}'>{{ apartment.id }}</a></th>
                 <th>{{ apartment.title }}</th>
                 <th>{{ apartment.city }}</th>
                 <th>{{ apartment.site }}</th>
