@@ -24,7 +24,7 @@ export class AuthService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     // console.log(user);
-    return this.http.post('http://localhost:8000/account/get_auth_token/', user, {headers: headers})
+    return this.http.post('account/get_auth_token/', user, {headers: headers})
     .map(res => res.json());
   }
 

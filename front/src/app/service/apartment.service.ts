@@ -14,7 +14,7 @@ export class ApartmentService {
 
   private apartmentsUrl = 'api/v1/apartments/'; // Url
   private authUrl = 'api-auth/';
-  private url = 'http://localhost:8000/api/v1/apartments/'
+  private url = 'api/v1/apartments/'
 
   constructor(
     private http: Http,
