@@ -13,16 +13,17 @@ import { StatisticaComponent } from './components/statistica/statistica.componen
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 
-import { ApartmentService } from './service/apartment.service';
-import { AuthService } from './service/auth.service';
+import { ApartmentService }  from './service/apartment.service';
+import { AuthService }       from './service/auth.service';
+import { ValidationService } from './service/validation.service';
 
 const appRoutes: Routes = [
   {path:'', component:HomeComponent},
   {
-    path:'apartment',
+    path:'apartments/:num',
     component:ApartListComponent,
   },
-  {path:'apartment/:id', component:ApartDetailComponent},      
+  {path:'apartment/:id', component:ApartDetailComponent},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
 
@@ -45,7 +46,7 @@ const appRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [ApartmentService, AuthService],
+  providers: [ApartmentService, AuthService, ValidationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

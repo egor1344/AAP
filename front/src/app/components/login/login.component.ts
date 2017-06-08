@@ -11,6 +11,7 @@ export class LoginComponent implements OnInit {
 
   username: String;
   password: String;
+  email: String;
 
   constructor(
     private authService: AuthService,
@@ -24,13 +25,14 @@ export class LoginComponent implements OnInit {
 
     const user = {
       username: this.username,
-      password: this.password
+      password: this.password,
+      email: this.email
     };
 
     this.authService.authenticateUser(user).subscribe(data => {
-      if(!data.non_field_errors){
+      if(data.key){
         console.log(data);
-        this.authService.storeUserData(data.token, user.username);
+        this.authService.storeUserData(data.key, user.username);
         this.router.navigate(['/']);
       } else {
         this.router.navigate(['login'])
