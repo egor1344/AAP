@@ -12,16 +12,16 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class ApartmentService {
 
-  private apartmentsUrl = 'api/v1/apartments/'; // Url
+  private apartmentsUrl = 'api/v1/apartments/?page='; // Url
   private authUrl = 'api-auth/';
-  private url = 'http://localhost:8000/api/v1/apartments/'
+  private url = 'api/v1/apartments/'
 
   constructor(
     private http: Http,
     private authService: AuthService
   ) { }
 
-  getApartments(): Observable<Apartment[]> {
+  getApartments(num): Observable<any> {
     let token = this.authService.getToken()
     token = 'Token 	' + token;
     let headers = new Headers({
@@ -30,7 +30,7 @@ export class ApartmentService {
       'Access-Control-Allow-Origin': '*'
                              });
     let options = new RequestOptions({headers: headers})
-    return this.http.get(this.url, options)
+    return this.http.get(this.apartmentsUrl + num, options)
                .map(this.extractApartment)
                .catch(this.handleError);
   }
@@ -54,9 +54,7 @@ export class ApartmentService {
 
   private extractApartment(res: Response) {
     let body = res.json();
-    // console.log('result ' + body.results);
-    // console.log('body ' + body);
-    return body.results || body;
+    return body;
   }
 
   private handleError(error: any): Promise<any>{

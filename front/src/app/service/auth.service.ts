@@ -16,7 +16,7 @@ export class AuthService {
   registerUser(user){
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/users/register', user, {headers: headers})
+    return this.http.post('rest-auth/registration/', user, {headers: headers})
     .map(res => res.json());
   }
 
@@ -24,7 +24,7 @@ export class AuthService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     // console.log(user);
-    return this.http.post('http://localhost:8000/account/get_auth_token/', user, {headers: headers})
+    return this.http.post('rest-auth/login/', user, {headers: headers})
     .map(res => res.json());
   }
 

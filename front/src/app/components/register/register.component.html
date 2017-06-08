@@ -1,3 +1,36 @@
-<p>
-  register works!
-</p>
+<div class="conteiner">
+    <div class="row">
+        <div class="col-12 col-sm-4 offset-sm-4 col-md-4 offset-md-4">
+            <form (submit)="onRegisterSubmit()">
+                <h2>Регистрация пользователя</h2>
+                <div class="form-group">
+                  <label for="example-text-input">Логин</label>
+                  <input [(ngModel)]="username" name='username' type="text" id="inputLogin" class="form-control" placeholder="Логин" required autofocus>
+                  <div [hidden]="!usernameIsValid" class="alert alert-danger" role="alert">
+                    <strong>Ошибка! </strong>Длинна логина должна быть больше 4 символов
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Почта</label>
+                  <input [(ngModel)]="email"  name='email' type="email" id="inputEmail" class="form-control" placeholder="Email" required>
+                  <small id="emailHelp" class="form-text text-muted">Здесь тип подсказка</small>
+                  <div [hidden]="emailIsValid" class="alert alert-danger" role="alert">
+                    <strong>Ошибка! </strong>Введите правильную почту
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Пароль</label>
+                  <input [(ngModel)]="password1" name='password1' type="password" id="inputPassword" class="form-control" placeholder="Пароль" required>
+                </div>
+                <div class="form-group">
+                  <input [(ngModel)]="password2" name='password2' type="password" id="inputPassword2" class="form-control" placeholder="Повторите пароль" required>
+                  <div [hidden]="passIsValid" class="alert alert-danger" role="alert">
+                    <strong>Ошибка! </strong>Пароли не совпадают
+                  </div>
+                </div>
+
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+            </form>
+        </div>
+    </div>
+</div>
