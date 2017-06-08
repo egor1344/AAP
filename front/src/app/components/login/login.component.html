@@ -5,6 +5,8 @@
                 <h2>Логин, пароль</h2>
                 <label for="inputEmail" class="sr-only">Логин</label>
                 <input [(ngModel)]="username" name='username' type="text" id="inputLogin" class="form-control" placeholder="Логин" required autofocus>
+                <label for="inputPassword" class="sr-only">Email</label>
+                <input [(ngModel)]="email"  name='email' type="email" id="inputEmail" class="form-control" placeholder="Email" required>
                 <label for="inputPassword" class="sr-only">Пароль</label>
                 <input [(ngModel)]="password" name='password' type="password" id="inputPassword" class="form-control" placeholder="Пароль" required>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
