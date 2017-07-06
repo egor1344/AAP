@@ -28,7 +28,7 @@ class Command(BaseCommand):
             time.sleep(120)
 
     def _parse(self, url):
-        
+
         print(url, HOST)
 
         add_apartments = 0
@@ -79,7 +79,10 @@ class Command(BaseCommand):
                     price = page_in.xpath('//span[@class="price-value-string"][1]//text()')
                     address = page_in.xpath(
                             '//div[@class="seller-info-prop"][last()]//text()')
-                    address = address[3]
+                    try:
+                        address = address[3]
+                    except IndexError as e:
+                        continue
                     try:
                         price = price[0]
                     except IndexError:
