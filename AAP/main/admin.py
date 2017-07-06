@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Apartment, HistoryApartmentPrice
+from .models import Apartment, HistoryApartmentPrice, Sites
 
 class ApartmentAdmin(admin.ModelAdmin):
     list_display = ('title', 'price', 'city', 'date_time', 'site')
@@ -19,3 +19,4 @@ class ApartmentHistoryPriceAdmin(admin.ModelAdmin):
 
 admin.site.register(Apartment, ApartmentAdmin)
 admin.site.register(HistoryApartmentPrice, ApartmentHistoryPriceAdmin)
+admin.site.register(Sites)

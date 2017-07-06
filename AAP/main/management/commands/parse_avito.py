@@ -4,11 +4,13 @@ import logging
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
 import configparser
+import time
 
 from django.core.management.base import BaseCommand, CommandError
 
-from main.models import Apartment, HistoryApartmentPrice
+from main.models import Apartment, HistoryApartmentPrice, Sites
 
+HOST = 'https://www.avito.ru'
 
 logger = logging.getLogger('parse_avito')
 
@@ -18,16 +20,18 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('pages', default=1, type=int)
 
-    def _confing(self):
-        confing = configparser.ConfigParser()
-        confing.read('parser.ini')
-        avito = confing['Avito']
-        return avito['Url'], avito['Host']
-
     def handle(self, *args, **options):
+        urls = Sites.objects.filter(url__contains='avito')
+        print(urls)
+        for url in urls:
+            self._parse(url.url)
+            time.sleep(120)
+
+    def _parse(self, url):
+        
+        print(url, HOST)
+
         add_apartments = 0
-        url, host = self._confing()
-        print(url, host)
         r = urlopen(url)
         ht = r.read().decode('UTF-8')
         page = html.fromstring(ht)
@@ -40,7 +44,7 @@ class Command(BaseCommand):
             site='Avito').values_list('link')]
         print(len(links))
         for key, item in enumerate(item_list):
-            link = host + item.xpath(
+            link = HOST + item.xpath(
                 '//h3[@class="title item-description-title"]/a/@href'
             )[key]
 

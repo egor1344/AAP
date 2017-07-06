@@ -21,3 +21,6 @@ class HistoryApartmentPrice(models.Model):
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
     date_time = models.DateTimeField(auto_now_add=True)
     price = models.IntegerField(blank=True)
+
+class Sites(models.Model):
+    url = models.URLField()
