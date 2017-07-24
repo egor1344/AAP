@@ -184,12 +184,16 @@ class Command(BaseCommand):
         """ Получние адреса """
 
         city = page.xpath('//div[@class="item-map-location"]/span[@itemprop="name"]//text()')
-        address = city[0] + ' ' + ' '.join(page.xpath('//div[@class="item-map-location"]/span[@itemprop="address"]//text()'))
-        address = address.replace('\n', '')
-        address = address.replace('\u2009', '')
-        address = address.replace('\xa0', '')
-        address = address.replace('  ', ' ')
-        return address, city[0]
+        try:
+            address = city[0] + ' ' + ' '.join(page.xpath('//div[@class="item-map-location"]/span[@itemprop="address"]//text()'))
+        except IndexError:
+            address = page.xpath('//div[@class="item-map-location"]/span[@itemprop="address"]//text()')
+        finally: 
+            address = address.replace('\n', '')
+            address = address.replace('\u2009', '')
+            address = address.replace('\xa0', '')
+            address = address.replace('  ', ' ')
+            return address, city
 
 
     def get_district(self, address):
