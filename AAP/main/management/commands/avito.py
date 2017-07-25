@@ -5,7 +5,6 @@ from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
 import configparser
 import time
-from multiprocessing import Process
 import os
 
 from django.core.management.base import BaseCommand, CommandError
@@ -98,9 +97,11 @@ class Command(BaseCommand):
             except IndexError:
                 return False
             if link_apartment not in links:
-                p = Process(target=self.add_apartment, args=(link_apartment,))
-                p.start()
-                p.join() 
+                try:
+                    self.add_apartment(link_apartment)
+                except Exception as e:
+                    print(e)
+                    pass
             else:
                 self.update_apart(link_apartment)
 
