@@ -33,10 +33,10 @@ class Command(BaseCommand):
 
         self.proxy_list = Proxy().get_proxy_list()
         self.len_proxy_list = len(self.proxy_list)
-        print(self.proxy_list, self.len_proxy_list)
+        # print(self.proxy_list, self.len_proxy_list)
 
         urls = Sites.objects.filter(url__contains='avito')
-        print(urls)
+        # print(urls)
 
         # self.add_apartment('https://www.avito.ru/ufa/kvartiry/1-k_kvartira_37.8_m_818_et._1055574321')
 
@@ -44,14 +44,14 @@ class Command(BaseCommand):
             site='Avito').values_list('link')]
 
         for url in urls:
-            print(url.url)
+            # print(url.url)
             req_url = Request(url=url.url)
             req_url.add_header(
                 'User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0')
 
             url_list = self.get_ad_apartment(req_url)
             self.handle_ad_url(links, url_list)
-            print(url_list)
+            # print(url_list)
 
     def get_ad_apartment(self, url):
         """ Получение списка обьявлений на квартиры """
@@ -59,7 +59,7 @@ class Command(BaseCommand):
         while(self.len_proxy_list >= self.proxy_number):
 
             self.proxy_ip = self.proxy_list[self.proxy_number]
-            print(self.proxy_ip)
+            # print(self.proxy_ip)
 
             url.set_proxy(self.proxy_ip, 'http')
             cond, page = self.open_url(url)
@@ -77,7 +77,7 @@ class Command(BaseCommand):
 
         try:
             page = urlopen(url)
-            print(page.getcode())
+            # print(page.getcode())
         except Exception as e:
             # logger.exception('Not open url {}, execpt {}'.format(url, e))
             return False, None
@@ -100,7 +100,7 @@ class Command(BaseCommand):
                 try:
                     self.add_apartment(link_apartment)
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     pass
             else:
                 self.update_apart(link_apartment)
@@ -108,7 +108,7 @@ class Command(BaseCommand):
     def update_apart(self, url):
         """ Обновление цены  """
 
-        print('Update price ',url)
+        # print('Update price ',url)
         req_url = Request(url=url)
         req_url.add_header(
                 'User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0')
@@ -117,7 +117,7 @@ class Command(BaseCommand):
         while (self.len_proxy_list >= self.proxy_number):
 
             self.proxy_ip = self.proxy_list[self.proxy_number]
-            print(self.proxy_ip)
+            # print(self.proxy_ip)
 
             req_url.set_proxy(self.proxy_ip, 'http')
             cond, page = self.open_url(req_url)
@@ -136,7 +136,7 @@ class Command(BaseCommand):
     def add_apartment(self, url):
         """ Добавление обьявления о квартире в базу """
 
-        print(url)
+        # print(url)
         req_url = Request(url=url)
         req_url.add_header(
                 'User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0')
@@ -145,7 +145,7 @@ class Command(BaseCommand):
         while (self.len_proxy_list >= self.proxy_number):
 
             self.proxy_ip = self.proxy_list[self.proxy_number]
-            print(self.proxy_ip)
+            # print(self.proxy_ip)
 
             req_url.set_proxy(self.proxy_ip, 'http')
             cond, page = self.open_url(req_url)
@@ -160,8 +160,6 @@ class Command(BaseCommand):
     def parsing_page_ad(self, page):
         """ Парсинг обьявления о квартире """
 
-        print('parent process:', os.getppid())
-        print('process id:', os.getpid())
         params = {}
         params['title'] = self.get_title(page)
         params['living_space'] = self.get_living_space(page)
@@ -172,7 +170,7 @@ class Command(BaseCommand):
         params['floor'] = self.get_floor(page)
         params['type_house'] = self.get_type_house(page)
         params['district'] = self.get_district(params['address'])
-        print(params)
+        # print(params)
         return params
 
     def get_title(self, page):
@@ -185,11 +183,16 @@ class Command(BaseCommand):
         """ Получние адреса """
 
         city = page.xpath('//div[@class="item-map-location"]/span[@itemprop="name"]//text()')
+        # print('city', city)
         try:
             address = city[0] + ' ' + ' '.join(page.xpath('//div[@class="item-map-location"]/span[@itemprop="address"]//text()'))
         except IndexError:
+            # print('index error')
             address = page.xpath('//div[@class="item-map-location"]/span[@itemprop="address"]//text()')
-        finally: 
+        finally:
+            if type(address) == list:
+                # print(address)
+
             address = address.replace('\n', '')
             address = address.replace('\u2009', '')
             address = address.replace('\xa0', '')
@@ -249,7 +252,7 @@ class Command(BaseCommand):
         """ Получене квадратуры квартиры """
 
         s = page.xpath('//li[span="Общая площадь: "]//text()')
-        print(s)
+        # print(s)
         try:
             s = s[-1]
         except IndexError:
@@ -301,4 +304,4 @@ class Command(BaseCommand):
                         type_house=param['type_house'],
                         district=param['district'],
                         active=True)
-        print(a)
+        # print(a)
